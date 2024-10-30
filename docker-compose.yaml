@@ -1,0 +1,45 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:14
+    container_name: techradar_postgres
+    volumes:
+      - ./tmp/pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+      POSTGRES_DB: ${PG_DB}
+      POSTGRES_HOST: ${PG_HOST}
+      POSTGRES_USER: ${PG_USER}
+    ports:
+      - ${PG_PORT}:5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${PG_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  api:
+    container_name: techradar_api
+    build: .
+    stdin_open: true
+    tty: true
+    links:
+      - "db:${PG_HOST}"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PG_HOST: ${PG_HOST}
+#      PG_CONNECTION_STRING: host=${PG_HOST} port=${PG_PORT} dbname=${PG_DB} user=${PG_USER} password=${PG_PASSWORD} sslmode=disable
+#      API_PORT: ${API_PORT}
+    ports:
+      - ${API_PORT}:${API_PORT}
+#  api:
+#    image: tomcat:9-jre17
+#    container_name: techradar_api
+#    ports:
+#      - ${API_PORT}:8080
+#    depends_on:
+#      db:
+#        condition: service_healthy
+#    volumes:
+#      - ./out/artifacts/api/api.war:/usr/local/tomcat/webapps/api.war

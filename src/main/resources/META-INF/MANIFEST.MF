@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Main-Class: com.techradar.polls.techradar_polls.TechradarPollsApplicatio
+ n
+
