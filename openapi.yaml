@@ -1,0 +1,159 @@
+openapi: 3.0.1
+info:
+  title: Technology Radar API
+  description: Api для управления технологиями в техрадаре
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Generated server url
+paths:
+  /poll:
+    post:
+      tags:
+        - polls-controller
+      summary: Получение списка технологий
+      operationId: addPoll
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestPollDto'
+        required: true
+      responses:
+        '201':
+          description: Результат опроса успешно добавлен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponsePollDto'
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '404':
+          description: Технология не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+  /api/technology:
+    get:
+      tags:
+        - api-technology-controller
+      summary: Добавление результата опроса
+      operationId: getTechnologies
+      parameters:
+        - name: category
+          in: query
+          description: Категория технологии
+          required: false
+          schema:
+            type: string
+        - name: section
+          in: query
+          description: Секция технологии
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Успешная операция, возвращен список технологий
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseTechDto'
+        '404':
+          description: Некорректные параметры запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetailsResponseDto'
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+components:
+  schemas:
+    RequestPollDto:
+      required:
+        - ringResult
+        - tech_id
+      type: object
+      properties:
+        tech_id:
+          type: integer
+          description: Уникальный идентификатор технологии
+          format: int64
+        ringResult:
+          type: string
+          description: Результат опроса
+    ErrorResponseDto:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+    ResponsePollDto:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Результат опроса успешно добавлен
+    ErrorDetails:
+      type: object
+      properties:
+        category:
+          type: string
+          example: Invalid value
+        section:
+          type: string
+          example: Invalid value
+    ErrorDetailsResponseDto:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Invalid query parameters
+        details:
+          $ref: '#/components/schemas/ErrorDetails'
+    ResponseTechDto:
+      type: object
+      properties:
+        technologies:
+          type: array
+          items:
+            $ref: '#/components/schemas/TechnologyDto'
+    TechnologyDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 2
+        name:
+          type: string
+          example: Spring Boot
+        description:
+          type: string
+          example: Фреймворк для создания микросервисов на Java
+        category:
+          type: string
+          example: Language
+        section:
+          type: string
+          example: Backend
+        ring:
+          type: string
+          example: TRIAL

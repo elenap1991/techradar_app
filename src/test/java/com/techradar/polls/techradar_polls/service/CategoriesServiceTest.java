@@ -1,8 +1,7 @@
-package com.techradar.polls.techradar_polls.service.modelService;
+package com.techradar.polls.techradar_polls.service;
 
 import com.techradar.polls.techradar_polls.jpa.CategoriesRepository;
 import com.techradar.polls.techradar_polls.model.Category;
-import com.techradar.polls.techradar_polls.service.CategoriesService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -45,6 +44,6 @@ public class CategoriesServiceTest {
         Exception exception = assertThrows(ResponseStatusException.class,
                 () -> categoriesService.findByCategoryName("test"));
 
-        assertTrue(exception.getMessage().contains("Invalid category name"));
+        assertTrue(exception.getMessage().contains("Invalid value"));
     }
 }

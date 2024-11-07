@@ -1,5 +1,6 @@
 package com.techradar.polls.techradar_polls.model;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;

@@ -1,8 +1,7 @@
-package com.techradar.polls.techradar_polls.service.modelService;
+package com.techradar.polls.techradar_polls.service;
 
 import com.techradar.polls.techradar_polls.jpa.RingsRepository;
 import com.techradar.polls.techradar_polls.model.Ring;
-import com.techradar.polls.techradar_polls.service.RingsService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

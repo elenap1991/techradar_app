@@ -18,7 +18,7 @@ public class CategoriesService {
     public Category findByCategoryName(String categoryName) {
         List<Category> category = categoriesRepository.findCategoriesByCatName(categoryName);
         if (category.size() != 1) {
-            throw new ResponseStatusException(NOT_FOUND, "Invalid category name");
+            throw new ResponseStatusException(NOT_FOUND, "Invalid value");
         }
         return category.get(0);
     }

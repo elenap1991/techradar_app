@@ -5,4 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PollsRepository extends JpaRepository <Poll, Long> {
 
+    Poll save(Poll poll);
+
 }

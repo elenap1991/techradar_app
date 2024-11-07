@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface RingsRepository extends JpaRepository <Ring, Long> {
-    @Query("select r from Ring r where r.ring_name = ?1")
+    @Query("select r from Ring r where r.ringName = ?1")
     List<Ring> findByRingName(String ringName);
 }
