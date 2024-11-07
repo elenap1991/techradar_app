@@ -1,27 +1,33 @@
 package com.techradar.polls.techradar_polls.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.techradar.polls.techradar_polls.dto.RequestPollDto;
 import com.techradar.polls.techradar_polls.jpa.PollsRepository;
-import com.techradar.polls.techradar_polls.model.*;
+import com.techradar.polls.techradar_polls.model.Poll;
+import com.techradar.polls.techradar_polls.model.Ring;
+import com.techradar.polls.techradar_polls.model.Technology;
+import com.techradar.polls.techradar_polls.model.User;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.HashMap;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpStatus.CREATED;
 
 @SpringBootTest(
         properties = {"PG_HOST = localhost"}
 )
-@ExtendWith(MockitoExtension.class)
+@AutoConfigureMockMvc
 public class PollsServiceTest {
     @Mock
-    private PollsRepository pollsRepository;
+    private PollsRepository pollRepository;
+
+    @Mock
+    private UserService userService;
 
     @Mock
     private TechnologiesService technologiesService;
@@ -29,29 +35,27 @@ public class PollsServiceTest {
     @Mock
     private RingsService ringsService;
 
-    @Mock
-    UserService userService;
-
     @InjectMocks
     private PollService pollService;
 
-    @Mock
-    private ObjectMapper objectMapper;
+    private Poll poll;
+    private User user;
+    private Ring ring;
 
     @Test
-    public void test1(){
-        String categoryName = "test";
-        Long id = 1L;
-        HashMap<String, String> req = new HashMap<>();
-        req.put("tech_id", "100");
-        req.put("ringResult", "TRIAL");
-        when(userService.getUserById(id)).thenReturn(new User());
-        when(technologiesService.findTechnologyById(id)).thenReturn(new Technology());
-        when(ringsService.getRingByName("name")).thenReturn(new Ring());
-        when(pollsRepository.save(new Poll())).thenReturn(new Poll());
+    public void postPollSuccess() throws Exception {
+        String ringName = "test";
+        user = new User();
+        ring = new Ring();
+        poll = new Poll(user, 1l, ring, LocalDateTime.now());
 
-        assertEquals(1, pollService.savePoll(req, id).getBody());
+        when(pollRepository.save(poll)).thenReturn(poll);
+        when(userService.getUserById(1l)).thenReturn(user);
+        when(technologiesService.findTechnologyById(1l)).thenReturn(new Technology());
+        when(ringsService.getRingByName(ringName)).thenReturn(ring);
 
+        var result = pollService.savePoll(new RequestPollDto(1l, ringName), 1l);
+
+        assertEquals(result.getStatusCode(), CREATED);
     }
-
 }
