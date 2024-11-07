@@ -1,7 +1,5 @@
 package com.techradar.polls.techradar_polls.service;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.techradar.polls.techradar_polls.dto.ErrorResponseDto;
 import com.techradar.polls.techradar_polls.dto.RequestPollDto;
 import com.techradar.polls.techradar_polls.dto.ResponsePollDto;
@@ -16,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -36,28 +33,21 @@ public class PollService {
     @Autowired
     UserService userService;
 
-    @Autowired
-    ObjectMapper mapper;
-
-    public ResponseEntity savePoll(Map<String, String> req, Long userId) {
-        RequestPollDto pollDto;
+    public ResponseEntity savePoll(RequestPollDto req, Long userId) {
         User user;
         Ring ring;
-        mapper.configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, true);
-        try {
-            pollDto = mapper.convertValue(req, RequestPollDto.class);
-        } catch (RuntimeException e) {
+        if (req.getTech_id() == null || req.getRingResult() == null) {
             return new ResponseEntity<>(new ErrorResponseDto(BAD_REQUEST.value(), "BAD_REQUEST"), BAD_REQUEST);
         }
         try {
             user = userService.getUserById(userId);
-            technologiesService.findTechnologyById(pollDto.getTech_id());
-            ring = ringsService.getRingByName(pollDto.getRingResult());
+            technologiesService.findTechnologyById(req.getTech_id());
+            ring = ringsService.getRingByName(req.getRingResult());
         } catch (ResponseStatusException e) {
             return new ResponseEntity<>(new ErrorResponseDto(NOT_FOUND.value(), "TECHNOLOGY_NOT_FOUND"), NOT_FOUND);
         }
 
-        Poll poll = new Poll(user, pollDto.getTech_id(), ring, LocalDateTime.now());
+        Poll poll = new Poll(user, req.getTech_id(), ring, LocalDateTime.now());
         pollsRepository.save(poll);
         return new ResponseEntity<>(new ResponsePollDto(RESULT_SUCCESS_ADDED), HttpStatus.CREATED);
     }

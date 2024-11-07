@@ -1,5 +1,6 @@
 package com.techradar.polls.techradar_polls.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -12,7 +13,9 @@ import lombok.NoArgsConstructor;
 @Table(name = "rings")
 public class Ring {
     @Id
-    private long ring_id;
+    @Column(name = "ring_id")
+    private long ringId;
 
-    private String ring_name;
+    @Column(name = "ring_name")
+    private String ringName;
 }
